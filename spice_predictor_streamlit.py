@@ -72,7 +72,14 @@ page = st.sidebar.radio("Navigation", ["🔮 Predictor", "ℹ️ Model Info & Fa
 # ---------------------------
 # Load dataset and train model
 # ---------------------------
-df = pd.read_csv(r"C:\Users\anilbabu.parimi\OneDrive - Mu Sigma Business Solutions Pvt. Ltd\Desktop\spice_tolerance_dataset.csv")
+import os
+
+# Get the path of the current script
+BASE_DIR = os.path.dirname(__file__)
+csv_path = os.path.join(BASE_DIR, "spice_tolerance_dataset.csv")
+
+df = pd.read_csv(csv_path)
+
 
 # Encode categorical columns
 categorical_cols = ["Gender", "Favorite_Cuisine", "Hometown_Climate",
@@ -295,3 +302,4 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
