@@ -1,0 +1,119 @@
+﻿Name,Age,Gender,Favorite_Cuisine,Spicy_Freq_Per_Week,Hot_Drink_Tolerance,Pain_Threshold,Hometown_Climate,Activity_Level,Family_Spicy,Likes_Exotic,Favorite_Snack,Spice_Tolerance
+Krishna Sai,27,Male,American,3,5,4,Temperate,Sedentary,No,No,Nuts,Low
+Vignesh Nayar,19,Female,Indian,6,10,1,Hot,Active,Yes,No,Nuts,High
+Abdullakhan Patan,20,Male,Thai,5,2,3,Temperate,Moderate,No,Yes,Chips,Low
+Akshaya Gayatri,43,Female,Chinese,0,8,10,Temperate,Moderate,No,Yes,Fruit,High
+Meghana,48,Female,Chinese,4,2,2,Cold,Active,Yes,Yes,Chips,Low
+Ayush Purohit,27,Male,Italian,4,3,5,Temperate,Sedentary,Yes,Yes,Chocolate,Low
+Aditya Patel,50,Male,American,5,7,3,Hot,Active,Yes,No,Chocolate,Low
+Parimi Anil Babu,36,Female,Indian,1,10,2,Temperate,Moderate,No,Yes,Chocolate,Low
+Narendran,55,Male,Indian,7,9,10,Temperate,Sedentary,No,Yes,Fruit,High
+Azim Ahamed,57,Male,Chinese,3,1,9,Cold,Sedentary,Yes,No,Popcorn,Low
+Ramkumar,40,Male,Thai,4,7,2,Cold,Sedentary,No,Yes,Popcorn,Low
+Sreekar,25,Male,Indian,5,10,8,Hot,Active,Yes,Yes,Chocolate,High
+Vyshnavi,59,Female,Thai,2,3,6,Hot,Moderate,No,Yes,Chocolate,Low
+Manchu Sana,23,Male,Italian,5,4,1,Temperate,Moderate,No,No,Chocolate,Low
+Santhi Murthy,45,Male,Thai,0,8,8,Hot,Sedentary,No,No,Nuts,High
+Sowjanya MR,42,Male,Thai,4,2,1,Hot,Active,No,No,Popcorn,Low
+Banala Deekshitha,46,Male,American,0,9,5,Temperate,Moderate,No,No,Popcorn,Low
+Badam Vaishnavi Reddy,59,Male,Thai,3,2,7,Cold,Sedentary,No,Yes,Fruit,Low
+Person_19,26,Female,Thai,2,10,1,Hot,Active,Yes,No,Fruit,Low
+Person_20,43,Male,American,6,8,3,Temperate,Sedentary,Yes,No,Nuts,High
+Person_21,58,Female,Indian,0,1,2,Cold,Moderate,Yes,No,Popcorn,Low
+Person_22,21,Male,Chinese,3,1,5,Temperate,Active,Yes,Yes,Fruit,Low
+Person_23,31,Male,Italian,0,9,4,Temperate,Moderate,No,No,Fruit,Low
+Person_24,37,Female,American,2,5,5,Cold,Sedentary,Yes,Yes,Nuts,Low
+Person_25,48,Male,American,0,5,4,Hot,Moderate,Yes,Yes,Chocolate,Low
+Person_26,35,Male,Indian,4,10,5,Hot,Active,No,No,Nuts,High
+Person_27,34,Female,Mexican,0,4,4,Temperate,Sedentary,Yes,No,Fruit,Low
+Person_28,57,Female,Chinese,2,4,4,Cold,Moderate,Yes,Yes,Nuts,Low
+Person_29,31,Female,Indian,2,1,10,Temperate,Active,No,No,Chips,Low
+Person_30,34,Female,Mexican,1,5,4,Temperate,Sedentary,Yes,No,Fruit,Low
+Person_31,49,Male,Thai,3,3,5,Temperate,Sedentary,Yes,No,Nuts,Low
+Person_32,18,Male,Indian,6,9,7,Cold,Active,No,Yes,Chocolate,High
+Person_33,49,Male,Italian,5,4,2,Hot,Active,Yes,Yes,Chocolate,Low
+Person_34,41,Male,Chinese,7,4,2,Hot,Moderate,No,No,Chips,Low
+Person_35,56,Male,Mexican,0,2,3,Hot,Active,No,No,Chocolate,Low
+Person_36,45,Female,Thai,7,3,10,Cold,Moderate,Yes,Yes,Chocolate,High
+Person_37,32,Male,Mexican,0,2,8,Temperate,Sedentary,Yes,Yes,Nuts,Low
+Person_38,47,Female,Indian,7,7,1,Cold,Sedentary,No,No,Popcorn,Low
+Person_39,34,Male,Mexican,1,7,6,Hot,Sedentary,No,No,Nuts,Low
+Person_40,25,Male,Mexican,5,3,6,Hot,Sedentary,Yes,Yes,Chips,Low
+Person_41,38,Female,Chinese,7,5,3,Hot,Active,Yes,No,Chocolate,Low
+Person_42,38,Male,Italian,2,8,2,Cold,Sedentary,Yes,Yes,Chips,Low
+Person_43,46,Male,American,6,7,2,Temperate,Sedentary,No,No,Nuts,Low
+Person_44,37,Male,Mexican,1,3,9,Temperate,Active,Yes,No,Popcorn,Low
+Person_45,26,Male,Mexican,4,1,1,Cold,Active,No,No,Popcorn,Low
+Person_46,48,Male,Thai,3,9,3,Cold,Active,No,No,Nuts,Low
+Person_47,31,Male,Italian,6,5,1,Hot,Sedentary,No,Yes,Fruit,Low
+Person_48,27,Male,Italian,0,10,5,Cold,Active,Yes,No,Chips,Low
+Person_49,56,Female,Indian,7,8,6,Cold,Sedentary,Yes,Yes,Nuts,High
+Person_50,60,Male,American,4,7,1,Temperate,Active,No,Yes,Nuts,Low
+Person_51,49,Male,American,4,1,9,Cold,Active,No,Yes,Chocolate,Low
+Person_52,47,Female,American,0,2,7,Cold,Moderate,No,Yes,Chips,Low
+Person_53,35,Female,Italian,2,8,7,Temperate,Active,No,No,Nuts,High
+Person_54,58,Male,American,3,6,1,Hot,Sedentary,No,No,Chocolate,Low
+Person_55,41,Male,Chinese,3,5,7,Cold,Moderate,No,No,Popcorn,Low
+Person_56,42,Male,Chinese,7,10,4,Hot,Sedentary,Yes,No,Popcorn,High
+Person_57,59,Male,Mexican,0,7,8,Cold,Moderate,No,No,Fruit,Low
+Person_58,60,Female,Indian,3,1,3,Hot,Moderate,Yes,Yes,Chips,Low
+Person_59,40,Female,Thai,6,7,7,Cold,Sedentary,No,Yes,Chips,High
+Person_60,37,Female,Italian,7,10,2,Temperate,Moderate,No,No,Fruit,High
+Person_61,22,Female,Mexican,3,1,8,Temperate,Moderate,Yes,Yes,Fruit,Low
+Person_62,31,Male,Chinese,4,7,7,Hot,Moderate,No,Yes,Nuts,High
+Person_63,53,Male,Indian,2,3,10,Hot,Sedentary,Yes,No,Chocolate,Low
+Person_64,39,Female,Italian,6,4,1,Temperate,Moderate,Yes,No,Chips,Low
+Person_65,18,Female,American,4,7,6,Hot,Sedentary,Yes,No,Chips,High
+Person_66,26,Male,Italian,0,10,6,Cold,Active,Yes,No,Popcorn,High
+Person_67,48,Male,Italian,6,10,3,Cold,Sedentary,No,No,Chocolate,High
+Person_68,36,Female,Indian,7,10,8,Hot,Active,Yes,No,Chips,High
+Person_69,23,Male,Mexican,6,1,4,Cold,Sedentary,No,Yes,Fruit,Low
+Person_70,25,Female,American,3,5,1,Hot,Moderate,No,Yes,Nuts,Low
+Person_71,52,Female,Thai,2,4,2,Temperate,Moderate,No,No,Chips,Low
+Person_72,36,Male,Italian,7,4,4,Hot,Active,No,Yes,Nuts,Low
+Person_73,56,Female,Mexican,2,8,4,Hot,Moderate,Yes,No,Nuts,Low
+Person_74,32,Female,American,6,9,4,Hot,Sedentary,No,Yes,Fruit,High
+Person_75,24,Female,Indian,4,4,10,Temperate,Moderate,Yes,No,Fruit,High
+Person_76,31,Male,Chinese,0,1,7,Temperate,Moderate,No,No,Fruit,Low
+Person_77,54,Female,Italian,6,5,2,Hot,Moderate,Yes,Yes,Chocolate,Low
+Person_78,47,Male,Indian,3,4,8,Cold,Sedentary,No,Yes,Popcorn,Low
+Person_79,33,Female,American,3,6,5,Cold,Moderate,Yes,Yes,Popcorn,Low
+Person_80,41,Female,Indian,2,5,4,Hot,Active,Yes,No,Chips,Low
+Person_81,50,Female,Thai,1,9,3,Hot,Moderate,No,Yes,Popcorn,Low
+Person_82,31,Female,Italian,2,10,8,Cold,Sedentary,Yes,Yes,Nuts,High
+Person_83,44,Female,Mexican,2,3,1,Cold,Sedentary,No,No,Fruit,Low
+Person_84,46,Female,Thai,0,8,1,Temperate,Moderate,Yes,No,Nuts,Low
+Person_85,39,Male,Thai,5,6,4,Temperate,Active,Yes,No,Fruit,Low
+Person_86,37,Male,Thai,2,3,4,Cold,Active,No,Yes,Chips,Low
+Person_87,40,Female,Italian,7,7,4,Temperate,Active,Yes,Yes,Chips,High
+Person_88,48,Female,Italian,0,7,6,Hot,Active,Yes,No,Chocolate,Low
+Person_89,25,Male,Chinese,5,6,8,Cold,Moderate,Yes,No,Chips,High
+Person_90,35,Male,Thai,5,5,3,Temperate,Moderate,Yes,Yes,Chocolate,Low
+Person_91,37,Female,Thai,7,5,4,Temperate,Moderate,Yes,Yes,Nuts,High
+Person_92,52,Female,Indian,5,6,4,Hot,Sedentary,No,Yes,Chocolate,Low
+Person_93,21,Female,Indian,0,7,1,Temperate,Sedentary,No,Yes,Nuts,Low
+Person_94,47,Female,Thai,7,2,4,Temperate,Moderate,No,No,Nuts,Low
+Person_95,45,Male,Indian,5,3,2,Temperate,Sedentary,Yes,No,Chips,Low
+Person_96,21,Female,Indian,3,6,7,Temperate,Active,Yes,No,Fruit,High
+Person_97,37,Female,Italian,3,9,5,Hot,Active,Yes,Yes,Popcorn,High
+Person_98,22,Male,Italian,1,2,6,Temperate,Sedentary,No,No,Nuts,Low
+Person_99,35,Male,Indian,1,5,1,Cold,Moderate,No,No,Fruit,Low
+Person_100,26,Female,Italian,0,6,9,Temperate,Sedentary,No,No,Chocolate,Low
+Person_101,19,Female,Italian,1,2,9,Hot,Active,Yes,Yes,Fruit,Low
+Person_102,52,Male,American,1,7,5,Hot,Active,Yes,No,Popcorn,Low
+Person_103,51,Male,American,5,9,1,Cold,Active,No,Yes,Fruit,Low
+Person_104,48,Male,Italian,5,8,8,Hot,Sedentary,Yes,No,Chocolate,High
+Person_105,53,Male,Chinese,6,3,4,Hot,Moderate,No,Yes,Chips,Low
+Person_106,29,Male,Thai,7,5,8,Hot,Moderate,No,No,Chips,High
+Person_107,51,Male,Chinese,4,5,1,Cold,Sedentary,No,No,Popcorn,Low
+Person_108,51,Female,Mexican,0,7,7,Temperate,Moderate,Yes,Yes,Chocolate,Low
+Person_109,27,Female,Mexican,6,8,6,Hot,Sedentary,No,No,Popcorn,High
+Person_110,54,Female,American,4,1,5,Hot,Sedentary,No,No,Popcorn,Low
+Person_111,58,Female,Indian,5,6,6,Temperate,Moderate,Yes,No,Nuts,High
+Person_112,19,Female,Italian,6,10,10,Cold,Moderate,Yes,No,Chocolate,High
+Person_113,28,Male,Indian,2,6,10,Hot,Sedentary,Yes,No,Chocolate,High
+Person_114,29,Male,Italian,1,9,8,Cold,Sedentary,No,Yes,Popcorn,High
+Person_115,45,Female,Mexican,3,8,10,Cold,Active,Yes,No,Popcorn,High
+Person_116,21,Female,Italian,6,3,4,Hot,Moderate,Yes,No,Nuts,Low
+Person_117,29,Female,Italian,1,7,7,Hot,Moderate,No,No,Chocolate,Low
+Person_118,44,Female,Chinese,2,4,7,Cold,Moderate,Yes,Yes,Fruit,Low
