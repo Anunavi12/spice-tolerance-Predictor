@@ -128,44 +128,57 @@ if page == "🔮 Predictor":
     spicy_freq = st.number_input("Spicy frequency per week:", min_value=0, max_value=7, value=None, placeholder="Enter count")
     hot_drink = st.number_input("Hot drink tolerance (1-10):", min_value=1, max_value=10, value=None, placeholder="Enter level")
     pain_threshold = st.number_input("Pain threshold (1-10):", min_value=1, max_value=10, value=None, placeholder="Enter level")
+    import pycountry
 
-    # Dropdowns
-gender = st.selectbox("Gender:", ["Select Gender", "Male", "Female", "Other"])
-
-fav_cuisine = st.selectbox("Favorite Cuisine:", [
-    "Select Cuisine", "Indian", "Italian", "Mexican", "Chinese", "Thai", "American", "Mediterranean", "Japanese"
+# Gender
+gender = st.selectbox("Gender:", [
+    "Select Gender", "Male", "Female", "Other"
 ])
 
+# Favorite Cuisine
+fav_cuisine = st.selectbox("Favorite Cuisine:", [
+    "Select Cuisine", "Indian", "Italian", "Mexican", "Chinese", 
+    "Thai", "American", "Mediterranean", "Japanese"
+])
+
+# Hometown Climate
 hometown = st.selectbox("Hometown Climate:", [
     "Select Climate", "Hot", "Cold", "Moderate"
 ])
 
-# Keep it simple: activity level explained in plain words
+# Activity Level (simple + clear)
 activity = st.selectbox("Daily Activity Level:", [
-    "Select Activity", "Sedentary (mostly sitting)", "Moderate (some movement)", "Active"
+    "Select Activity", 
+    "Sedentary (mostly sitting)", 
+    "Moderate (some movement)", 
+    "Active (physically energetic)"
 ])
 
+# Family eats spicy?
 family = st.selectbox("Does your family eat spicy food?", [
     "Select Option", "Yes", "No"
 ])
 
+# Likes exotic food?
 likes_exotic = st.selectbox("Do you like trying new foods?", [
     "Select Option", "Yes", "No"
 ])
 
-# Expanded snack options – common + desi + international
+# Favorite Snack (common + desi + international)
 snack = st.selectbox("Favorite Snack:", [
     "Select Snack", 
     "Chips", "Chocolate", "Popcorn", "Nuts", "Fruit",
     "Bajji", "Bonda", "Pakora", "Samosa", "Vada", 
-    "Pani Puri", "Kachori", "Momos", "Spring Rolls", "Cake", "Cookies"
+    "Pani Puri", "Kachori", "Momos", "Spring Rolls", 
+    "Cake", "Cookies", "Ice Cream", "Burger", "Pizza"
 ])
 
+# Country dropdown (using pycountry)
+countries = sorted([country.name for country in pycountry.countries])
+country = st.selectbox("Country:", ["Select Country"] + countries)
 
-    # Country dropdown
-    countries = [country.name for country in pycountry.countries]
-    country = st.selectbox("Country:", ["Select Country"] + countries)
 
+    
     # Predict Button
 if st.button("Predict Spice Tolerance"):
     try:
@@ -326,5 +339,6 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
 
 
