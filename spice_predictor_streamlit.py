@@ -177,73 +177,6 @@ snack = st.selectbox("Favorite Snack:", [
 countries = sorted([country.name for country in pycountry.countries])
 country = st.selectbox("Country:", ["Select Country"] + countries)
 
-
-    
-    # Predict Button
-if st.button("Predict Spice Tolerance"):
-    try:
-        new_data = pd.DataFrame([{
-            "Age": age,
-            "Gender": encoders["Gender"].transform([gender])[0],
-            "Favorite_Cuisine": encoders["Favorite_Cuisine"].transform([fav_cuisine])[0],
-            "Spicy_Freq_Per_Week": spicy_freq,
-            "Hot_Drink_Tolerance": hot_drink,
-            "Pain_Threshold": pain_threshold,
-            "Hometown_Climate": encoders["Hometown_Climate"].transform([hometown])[0],
-            "Activity_Level": encoders["Activity_Level"].transform([activity])[0],
-            "Family_Spicy": encoders["Family_Spicy"].transform([family])[0],
-            "Likes_Exotic": encoders["Likes_Exotic"].transform([likes_exotic])[0],
-            "Favorite_Snack": encoders["Favorite_Snack"].transform([snack])[0]
-        }])
-        prediction = model.predict(new_data)
-        result = "🔥 High Spice Tolerance 🌶️" if prediction[0] == 1 else "❄️ Low Spice Tolerance 🌱"
-
-        # Centered prediction box
-        st.markdown(
-            f"""
-            <style>
-            /* Full page background */
-            .stApp {{
-                background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%);
-                background-attachment: fixed;
-            }}
-
-            /* Prediction box centered */
-            #result-box {{
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                z-index: 9999;
-                width: 90%;
-                max-width: 600px;
-                background-color: #fff3e6;
-                padding: 30px;
-                border-radius: 15px;
-                border: 3px solid #ff751a;
-                text-align: center;
-                font-size: 28px;
-                font-weight: bold;
-                color: #cc3300;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            }}
-            </style>
-
-            <div id="result-box">
-                🎯 Predicted Spice Tolerance: <br><br> {result}
-            </div>
-
-            <script>
-            // Smooth scroll to center (optional)
-            document.getElementById('result-box').scrollIntoView({{ behavior: 'smooth', block: 'center' }});
-            </script>
-            """,
-            unsafe_allow_html=True
-        )
-
-    except Exception as e:
-        st.error(f"Error: {str(e)}")
-
 # ---------------------------
 # Page 2: Model Info
 # ---------------------------
@@ -339,6 +272,7 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
 
 
 
