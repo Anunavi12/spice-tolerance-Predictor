@@ -130,13 +130,37 @@ if page == "🔮 Predictor":
     pain_threshold = st.number_input("Pain threshold (1-10):", min_value=1, max_value=10, value=None, placeholder="Enter level")
 
     # Dropdowns
-    gender = st.selectbox("Gender:", ["Select Gender", "Male", "Female"])
-    fav_cuisine = st.selectbox("Favorite Cuisine:", ["Select Cuisine", "Indian","Italian","Mexican","Chinese","Thai","American"])
-    hometown = st.selectbox("Hometown Climate:", ["Select Climate", "Hot","Cold","Temperate"])
-    activity = st.selectbox("Activity Level:", ["Select Activity", "Sedentary","Moderate","Active"])
-    family = st.selectbox("Family eats spicy?", ["Select Option", "Yes","No"])
-    likes_exotic = st.selectbox("Likes exotic food?", ["Select Option", "Yes","No"])
-    snack = st.selectbox("Favorite Snack:", ["Select Snack", "Chips","Chocolate","Popcorn","Nuts","Fruit"])
+gender = st.selectbox("Gender:", ["Select Gender", "Male", "Female", "Other"])
+
+fav_cuisine = st.selectbox("Favorite Cuisine:", [
+    "Select Cuisine", "Indian", "Italian", "Mexican", "Chinese", "Thai", "American", "Mediterranean", "Japanese"
+])
+
+hometown = st.selectbox("Hometown Climate:", [
+    "Select Climate", "Hot", "Cold", "Moderate"
+])
+
+# Keep it simple: activity level explained in plain words
+activity = st.selectbox("Daily Activity Level:", [
+    "Select Activity", "Sedentary (mostly sitting)", "Moderate (some movement)", "Active"
+])
+
+family = st.selectbox("Does your family eat spicy food?", [
+    "Select Option", "Yes", "No"
+])
+
+likes_exotic = st.selectbox("Do you like trying new foods?", [
+    "Select Option", "Yes", "No"
+])
+
+# Expanded snack options – common + desi + international
+snack = st.selectbox("Favorite Snack:", [
+    "Select Snack", 
+    "Chips", "Chocolate", "Popcorn", "Nuts", "Fruit",
+    "Bajji", "Bonda", "Pakora", "Samosa", "Vada", 
+    "Pani Puri", "Kachori", "Momos", "Spring Rolls", "Cake", "Cookies"
+])
+
 
     # Country dropdown
     countries = [country.name for country in pycountry.countries]
@@ -302,4 +326,5 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
 
