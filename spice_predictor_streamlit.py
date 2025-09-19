@@ -130,9 +130,7 @@ if page == "🔮 Predictor":
     pain_threshold = st.number_input("Pain threshold (1-10):", min_value=1, max_value=10, value=None, placeholder="Enter level")
 
     # Gender
-    gender = st.selectbox("Gender:", [
-        "Select Gender", "Male", "Female", "Other"
-    ])
+    gender = st.selectbox("Gender:", ["Select Gender", "Male", "Female", "Other"])
 
     # Favorite Cuisine
     fav_cuisine = st.selectbox("Favorite Cuisine:", [
@@ -141,9 +139,7 @@ if page == "🔮 Predictor":
     ])
 
     # Hometown Climate
-    hometown = st.selectbox("Hometown Climate:", [
-        "Select Climate", "Hot", "Cold", "Moderate"
-    ])
+    hometown = st.selectbox("Hometown Climate:", ["Select Climate", "Hot", "Cold", "Moderate"])
 
     # Activity Level (user-friendly labels)
     activity = st.selectbox("Daily Activity Level:", [
@@ -152,30 +148,23 @@ if page == "🔮 Predictor":
         "Moderate (some movement)", 
         "Active (physically energetic)"
     ])
-
-    # Map to encoder labels
     activity_map = {
         "Sedentary (mostly sitting)": "Sedentary",
         "Moderate (some movement)": "Moderate",
         "Active (physically energetic)": "Active",
-        "Select Activity": "Sedentary"  # fallback
+        "Select Activity": "Sedentary"
     }
     activity_mapped = activity_map.get(activity, "Sedentary")
 
     # Family eats spicy?
-    family = st.selectbox("Does your family eat spicy food?", [
-        "Select Option", "Yes", "No"
-    ])
+    family = st.selectbox("Does your family eat spicy food?", ["Select Option", "Yes", "No"])
 
     # Likes exotic food?
-    likes_exotic = st.selectbox("Do you like trying new foods?", [
-        "Select Option", "Yes", "No"
-    ])
+    likes_exotic = st.selectbox("Do you like trying new foods?", ["Select Option", "Yes", "No"])
 
     # Favorite Snack
     snack = st.selectbox("Favorite Snack:", [
-        "Select Snack", 
-        "Chips", "Chocolate", "Popcorn", "Nuts", "Fruit",
+        "Select Snack", "Chips", "Chocolate", "Popcorn", "Nuts", "Fruit",
         "Bajji", "Bonda", "Pakora", "Samosa", "Vada", 
         "Pani Puri", "Kachori", "Momos", "Spring Rolls", 
         "Cake", "Cookies", "Ice Cream", "Burger", "Pizza"
@@ -185,72 +174,73 @@ if page == "🔮 Predictor":
     countries = sorted([country.name for country in pycountry.countries])
     country = st.selectbox("Country:", ["Select Country"] + countries)
 
+    # ✅ Button & popup
     if st.button("Predict Spice Tolerance"):
-    try:
-        new_data = pd.DataFrame([{
-            "Age": age,
-            "Gender": encoders["Gender"].transform([gender])[0],
-            "Favorite_Cuisine": encoders["Favorite_Cuisine"].transform([fav_cuisine])[0],
-            "Spicy_Freq_Per_Week": spicy_freq,
-            "Hot_Drink_Tolerance": hot_drink,
-            "Pain_Threshold": pain_threshold,
-            "Hometown_Climate": encoders["Hometown_Climate"].transform([hometown])[0],
-            "Activity_Level": encoders["Activity_Level"].transform([activity_mapped])[0],
-            "Family_Spicy": encoders["Family_Spicy"].transform([family])[0],
-            "Likes_Exotic": encoders["Likes_Exotic"].transform([likes_exotic])[0],
-            "Favorite_Snack": encoders["Favorite_Snack"].transform([snack])[0]
-        }])
+        try:
+            new_data = pd.DataFrame([{
+                "Age": age,
+                "Gender": encoders["Gender"].transform([gender])[0],
+                "Favorite_Cuisine": encoders["Favorite_Cuisine"].transform([fav_cuisine])[0],
+                "Spicy_Freq_Per_Week": spicy_freq,
+                "Hot_Drink_Tolerance": hot_drink,
+                "Pain_Threshold": pain_threshold,
+                "Hometown_Climate": encoders["Hometown_Climate"].transform([hometown])[0],
+                "Activity_Level": encoders["Activity_Level"].transform([activity_mapped])[0],
+                "Family_Spicy": encoders["Family_Spicy"].transform([family])[0],
+                "Likes_Exotic": encoders["Likes_Exotic"].transform([likes_exotic])[0],
+                "Favorite_Snack": encoders["Favorite_Snack"].transform([snack])[0]
+            }])
 
-        prediction = model.predict(new_data)
-        result = "🔥 High Spice Tolerance 🌶️" if prediction[0] == 1 else "❄️ Low Spice Tolerance 🌱"
+            prediction = model.predict(new_data)
+            result = "🔥 High Spice Tolerance 🌶️" if prediction[0] == 1 else "❄️ Low Spice Tolerance 🌱"
 
-        # 🎁 Modal popup effect
-        st.markdown(
-            f"""
-            <style>
-            /* Dark overlay */
-            #overlay {{
-                position: fixed;
-                top: 0; left: 0;
-                width: 100%; height: 100%;
-                background: rgba(0,0,0,0.6);
-                z-index: 9998;
-            }}
-            /* Popup box */
-            #popup {{
-                position: fixed;
-                top: 50%; left: 50%;
-                transform: translate(-50%, -50%);
-                z-index: 9999;
-                background: #fff3e6;
-                padding: 30px 40px;
-                border-radius: 15px;
-                border: 3px solid #ff751a;
-                max-width: 600px;
-                width: 90%;
-                text-align: center;
-                font-size: 28px;
-                font-weight: bold;
-                color: #cc3300;
-                box-shadow: 0 6px 20px rgba(0,0,0,0.35);
-                animation: pop 0.3s ease-out;
-            }}
-            @keyframes pop {{
-                from {{ transform: translate(-50%, -50%) scale(0.8); opacity: 0; }}
-                to {{ transform: translate(-50%, -50%) scale(1); opacity: 1; }}
-            }}
-            </style>
+            # 🎁 Modal popup
+            st.markdown(
+                f"""
+                <style>
+                /* Dark overlay */
+                #overlay {{
+                    position: fixed;
+                    top: 0; left: 0;
+                    width: 100%; height: 100%;
+                    background: rgba(0,0,0,0.6);
+                    z-index: 9998;
+                }}
+                /* Popup box */
+                #popup {{
+                    position: fixed;
+                    top: 50%; left: 50%;
+                    transform: translate(-50%, -50%);
+                    z-index: 9999;
+                    background: #fff3e6;
+                    padding: 30px 40px;
+                    border-radius: 15px;
+                    border: 3px solid #ff751a;
+                    max-width: 600px;
+                    width: 90%;
+                    text-align: center;
+                    font-size: 28px;
+                    font-weight: bold;
+                    color: #cc3300;
+                    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+                    animation: pop 0.3s ease-out;
+                }}
+                @keyframes pop {{
+                    from {{ transform: translate(-50%, -50%) scale(0.8); opacity: 0; }}
+                    to {{ transform: translate(-50%, -50%) scale(1); opacity: 1; }}
+                }}
+                </style>
 
-            <div id="overlay"></div>
-            <div id="popup">
-                🎯 Predicted Spice Tolerance <br><br> {result}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+                <div id="overlay"></div>
+                <div id="popup">
+                    🎯 Predicted Spice Tolerance <br><br> {result}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
-    except Exception as e:
-        st.error(f"Error: {str(e)}")
+        except Exception as e:
+            st.error(f"Error: {str(e)}")
 
 
 # ---------------------------
