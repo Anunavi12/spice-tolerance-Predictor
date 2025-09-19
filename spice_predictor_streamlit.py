@@ -123,25 +123,24 @@ if page == "🔮 Predictor":
     st.title("🌶️ Spice Tolerance Predictor 🌶️")
     st.write("Predict whether someone has High or Low spice tolerance based on simple attributes.\n")
 
+    # ---------------------------
     # Numeric inputs
+    # ---------------------------
     age = st.number_input("Age:", min_value=1, max_value=100, value=None, placeholder="Enter age")
     spicy_freq = st.number_input("Spicy frequency per week:", min_value=0, max_value=7, value=None, placeholder="Enter count")
     hot_drink = st.number_input("Hot drink tolerance (1-10):", min_value=1, max_value=10, value=None, placeholder="Enter level")
     pain_threshold = st.number_input("Pain threshold (1-10):", min_value=1, max_value=10, value=None, placeholder="Enter level")
 
-    # Gender
+    # ---------------------------
+    # Categorical inputs
+    # ---------------------------
     gender = st.selectbox("Gender:", ["Select Gender", "Male", "Female", "Other"])
-
-    # Favorite Cuisine
     fav_cuisine = st.selectbox("Favorite Cuisine:", [
         "Select Cuisine", "Indian", "Italian", "Mexican", "Chinese", 
         "Thai", "American", "Mediterranean", "Japanese"
     ])
-
-    # Hometown Climate
     hometown = st.selectbox("Hometown Climate:", ["Select Climate", "Hot", "Cold", "Moderate"])
 
-    # Activity Level (user-friendly labels)
     activity = st.selectbox("Daily Activity Level:", [
         "Select Activity", 
         "Sedentary (mostly sitting)", 
@@ -156,13 +155,9 @@ if page == "🔮 Predictor":
     }
     activity_mapped = activity_map.get(activity, "Sedentary")
 
-    # Family eats spicy?
     family = st.selectbox("Does your family eat spicy food?", ["Select Option", "Yes", "No"])
-
-    # Likes exotic food?
     likes_exotic = st.selectbox("Do you like trying new foods?", ["Select Option", "Yes", "No"])
 
-    # Favorite Snack
     snack = st.selectbox("Favorite Snack:", [
         "Select Snack", "Chips", "Chocolate", "Popcorn", "Nuts", "Fruit",
         "Bajji", "Bonda", "Pakora", "Samosa", "Vada", 
@@ -170,25 +165,36 @@ if page == "🔮 Predictor":
         "Cake", "Cookies", "Ice Cream", "Burger", "Pizza"
     ])
 
-    # Country dropdown
     countries = sorted([country.name for country in pycountry.countries])
     country = st.selectbox("Country:", ["Select Country"] + countries)
 
-    # ✅ Button & popup
+    # ---------------------------
+    # Safe transform function
+    # ---------------------------
+    def safe_transform(encoder, value, default="Other"):
+        """Transform a value with LabelEncoder; fallback to default if unseen."""
+        if value in encoder.classes_:
+            return encoder.transform([value])[0]
+        else:
+            return encoder.transform([default])[0]
+
+    # ---------------------------
+    # Predict Button & Popup
+    # ---------------------------
     if st.button("Predict Spice Tolerance"):
         try:
             new_data = pd.DataFrame([{
                 "Age": age,
-                "Gender": encoders["Gender"].transform([gender])[0],
-                "Favorite_Cuisine": encoders["Favorite_Cuisine"].transform([fav_cuisine])[0],
+                "Gender": safe_transform(encoders["Gender"], gender),
+                "Favorite_Cuisine": safe_transform(encoders["Favorite_Cuisine"], fav_cuisine),
                 "Spicy_Freq_Per_Week": spicy_freq,
                 "Hot_Drink_Tolerance": hot_drink,
                 "Pain_Threshold": pain_threshold,
-                "Hometown_Climate": encoders["Hometown_Climate"].transform([hometown])[0],
-                "Activity_Level": encoders["Activity_Level"].transform([activity_mapped])[0],
-                "Family_Spicy": encoders["Family_Spicy"].transform([family])[0],
-                "Likes_Exotic": encoders["Likes_Exotic"].transform([likes_exotic])[0],
-                "Favorite_Snack": encoders["Favorite_Snack"].transform([snack])[0]
+                "Hometown_Climate": safe_transform(encoders["Hometown_Climate"], hometown),
+                "Activity_Level": safe_transform(encoders["Activity_Level"], activity_mapped),
+                "Family_Spicy": safe_transform(encoders["Family_Spicy"], family),
+                "Likes_Exotic": safe_transform(encoders["Likes_Exotic"], likes_exotic),
+                "Favorite_Snack": safe_transform(encoders["Favorite_Snack"], snack)
             }])
 
             prediction = model.predict(new_data)
@@ -337,6 +343,7 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
 
 
 
