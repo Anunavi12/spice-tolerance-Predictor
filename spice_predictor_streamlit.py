@@ -105,9 +105,9 @@ if page == "🔮 Predictor":
     st.write("Predict whether someone has High or Low spice tolerance based on simple attributes.\n")
 
     # Inputs with session_state
-    age = st.number_input("Age:", min_value=1, max_value=100,
+    age = st.number_input("Age(upto 100):", min_value=1, max_value=100,
                           value=st.session_state.get("age", None), key="age")
-    spicy_freq = st.number_input("Spicy frequency per week:", min_value=0, max_value=7,
+    spicy_freq = st.number_input("Spicy frequency per week(0-7):", min_value=0, max_value=7,
                                  value=st.session_state.get("spicy_freq", None), key="spicy_freq")
     hot_drink = st.number_input("Hot drink tolerance (1-10):", min_value=1, max_value=10,
                                 value=st.session_state.get("hot_drink", None), key="hot_drink")
@@ -279,5 +279,6 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
 
 
