@@ -171,12 +171,16 @@ if page == "🔮 Predictor":
     # ---------------------------
     # Safe transform function
     # ---------------------------
-    def safe_transform(encoder, value, default="Other"):
-        """Transform a value with LabelEncoder; fallback to default if unseen."""
+    def safe_transform(encoder, value):
+        """Transform a value with LabelEncoder; fallback to 'Other' if unseen."""
         if value in encoder.classes_:
             return encoder.transform([value])[0]
+        elif "Other" in encoder.classes_:
+            return encoder.transform(["Other"])[0]
         else:
-            return encoder.transform([default])[0]
+            # Add 'Other' to classes dynamically if not present
+            encoder.classes_ = np.append(encoder.classes_, "Other")
+            return encoder.transform(["Other"])[0]
 
     # ---------------------------
     # Predict Button & Popup
@@ -343,6 +347,7 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
 
 
 
