@@ -145,7 +145,7 @@ if page == "🔮 Predictor":
         "Select Climate", "Hot", "Cold", "Moderate"
     ])
 
-    # Activity Level (user-friendly options)
+    # Activity Level (user-friendly labels)
     activity = st.selectbox("Daily Activity Level:", [
         "Select Activity", 
         "Sedentary (mostly sitting)", 
@@ -155,12 +155,12 @@ if page == "🔮 Predictor":
 
     # Map to encoder labels
     activity_map = {
-        "Sedentary (mostly sitting)": "Low",
+        "Sedentary (mostly sitting)": "Sedentary",
         "Moderate (some movement)": "Moderate",
-        "Active (physically energetic)": "High",
-        "Select Activity": "Low"
+        "Active (physically energetic)": "Active",
+        "Select Activity": "Sedentary"  # fallback
     }
-    activity_mapped = activity_map.get(activity, "Low")
+    activity_mapped = activity_map.get(activity, "Sedentary")
 
     # Family eats spicy?
     family = st.selectbox("Does your family eat spicy food?", [
@@ -205,7 +205,7 @@ if page == "🔮 Predictor":
             prediction = model.predict(new_data)
             result = "🔥 High Spice Tolerance 🌶️" if prediction[0] == 1 else "❄️ Low Spice Tolerance 🌱"
 
-            # 🎁 Centered result box
+            # 🎁 Centered result box (like a popup card)
             st.markdown(
                 f"""
                 <div style="display: flex; justify-content: center; align-items: center; margin-top: 50px;">
@@ -230,6 +230,7 @@ if page == "🔮 Predictor":
 
         except Exception as e:
             st.error(f"Error: {str(e)}")
+
 # ---------------------------
 # Page 2: Model Info
 # ---------------------------
@@ -325,6 +326,7 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
 
 
 
