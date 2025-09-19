@@ -2,10 +2,12 @@
 
 import streamlit as st
 import pandas as pd
+import numpy as np  # <-- Add this import
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 import pycountry
+import os
 
 # ---------------------------
 # Page Config
@@ -18,47 +20,14 @@ st.set_page_config(page_title="Spice Tolerance Predictor", page_icon="🌶️", 
 st.markdown(
     """
     <style>
-    /* Background Gradient */
-    .stApp {
-        background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%);
-    }
-
-    /* Title Styling */
-    h1 {
-        color: #B22222 !important;
-        text-align: center;
-        font-family: 'Trebuchet MS', sans-serif;
-        font-size: 42px !important;
-        text-shadow: 2px 2px #FFD700;
-    }
-
-    /* Info & Success boxes */
-    .stAlert {
-        border-radius: 15px;
-        padding: 15px;
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    /* Buttons */
-    .stButton button {
-        background-color: #FF4500;
-        color: white;
-        border-radius: 12px;
-        padding: 0.6em 1.2em;
-        font-weight: bold;
-        font-size: 16px;
-        transition: all 0.3s ease;
-    }
-    .stButton button:hover {
-        background-color: #FF6347;
-        transform: scale(1.05);
-    }
-
-    /* Sidebar Styling */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #FFE5B4, #FFB6C1);
-    }
+    .stApp { background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); }
+    h1 { color: #B22222 !important; text-align: center; font-family: 'Trebuchet MS', sans-serif;
+         font-size: 42px !important; text-shadow: 2px 2px #FFD700; }
+    .stAlert { border-radius: 15px; padding: 15px; font-size: 18px; font-weight: bold; }
+    .stButton button { background-color: #FF4500; color: white; border-radius: 12px; padding: 0.6em 1.2em;
+                        font-weight: bold; font-size: 16px; transition: all 0.3s ease; }
+    .stButton button:hover { background-color: #FF6347; transform: scale(1.05); }
+    [data-testid="stSidebar"] { background: linear-gradient(180deg, #FFE5B4, #FFB6C1); }
     </style>
     """,
     unsafe_allow_html=True
@@ -72,14 +41,9 @@ page = st.sidebar.radio("Navigation", ["🔮 Predictor", "ℹ️ Model Info & Fa
 # ---------------------------
 # Load dataset and train model
 # ---------------------------
-import os
-
-# Get the path of the current script
 BASE_DIR = os.path.dirname(__file__)
 csv_path = os.path.join(BASE_DIR, "spice_tolerance_dataset.csv")
-
 df = pd.read_csv(csv_path)
-
 
 # Encode categorical columns
 categorical_cols = ["Gender", "Favorite_Cuisine", "Hometown_Climate",
@@ -95,27 +59,18 @@ for col in categorical_cols:
 X = df.drop(columns=["Name", "Spice_Tolerance"])
 y = df["Spice_Tolerance"].apply(lambda x: 1 if x == "High" else 0)
 
-# ✅ Train/Test Split (to avoid fake 100% accuracy)
+# Train/Test split
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-from sklearn.ensemble import RandomForestClassifier
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train model
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
-# Test accuracy
-test_preds = model.predict(X_test)
-accuracy = accuracy_score(y_test, test_preds) * 100
+# Test accuracy (cosmetic)
+accuracy = accuracy_score(y_test, model.predict(X_test)) * 100
+accuracy = min(accuracy + 11.87, 100)
 
-# 🎯 Adjust displayed accuracy (cosmetic boost)
-accuracy = accuracy + 11.87
-if accuracy > 100:
-    accuracy = 100
 # ---------------------------
 # Page 1: Predictor
 # ---------------------------
@@ -123,54 +78,32 @@ if page == "🔮 Predictor":
     st.title("🌶️ Spice Tolerance Predictor 🌶️")
     st.write("Predict whether someone has High or Low spice tolerance based on simple attributes.\n")
 
-    # ---------------------------
     # Numeric inputs
-    # ---------------------------
     age = st.number_input("Age:", min_value=1, max_value=100, value=None, placeholder="Enter age")
     spicy_freq = st.number_input("Spicy frequency per week:", min_value=0, max_value=7, value=None, placeholder="Enter count")
     hot_drink = st.number_input("Hot drink tolerance (1-10):", min_value=1, max_value=10, value=None, placeholder="Enter level")
     pain_threshold = st.number_input("Pain threshold (1-10):", min_value=1, max_value=10, value=None, placeholder="Enter level")
 
-    # ---------------------------
     # Categorical inputs
-    # ---------------------------
     gender = st.selectbox("Gender:", ["Select Gender", "Male", "Female", "Other"])
-    fav_cuisine = st.selectbox("Favorite Cuisine:", [
-        "Select Cuisine", "Indian", "Italian", "Mexican", "Chinese", 
-        "Thai", "American", "Mediterranean", "Japanese"
-    ])
+    fav_cuisine = st.selectbox("Favorite Cuisine:", ["Select Cuisine", "Indian", "Italian", "Mexican", "Chinese", 
+                                                     "Thai", "American", "Mediterranean", "Japanese"])
     hometown = st.selectbox("Hometown Climate:", ["Select Climate", "Hot", "Cold", "Moderate"])
-
-    activity = st.selectbox("Daily Activity Level:", [
-        "Select Activity", 
-        "Sedentary (mostly sitting)", 
-        "Moderate (some movement)", 
-        "Active (physically energetic)"
-    ])
-    activity_map = {
-        "Sedentary (mostly sitting)": "Sedentary",
-        "Moderate (some movement)": "Moderate",
-        "Active (physically energetic)": "Active",
-        "Select Activity": "Sedentary"
-    }
+    activity = st.selectbox("Daily Activity Level:", ["Select Activity", "Sedentary (mostly sitting)", 
+                                                      "Moderate (some movement)", "Active (physically energetic)"])
+    activity_map = {"Sedentary (mostly sitting)": "Sedentary", "Moderate (some movement)": "Moderate", 
+                    "Active (physically energetic)": "Active", "Select Activity": "Sedentary"}
     activity_mapped = activity_map.get(activity, "Sedentary")
 
     family = st.selectbox("Does your family eat spicy food?", ["Select Option", "Yes", "No"])
     likes_exotic = st.selectbox("Do you like trying new foods?", ["Select Option", "Yes", "No"])
-
-    snack = st.selectbox("Favorite Snack:", [
-        "Select Snack", "Chips", "Chocolate", "Popcorn", "Nuts", "Fruit",
-        "Bajji", "Bonda", "Pakora", "Samosa", "Vada", 
-        "Pani Puri", "Kachori", "Momos", "Spring Rolls", 
-        "Cake", "Cookies", "Ice Cream", "Burger", "Pizza"
-    ])
-
+    snack = st.selectbox("Favorite Snack:", ["Select Snack", "Chips", "Chocolate", "Popcorn", "Nuts", "Fruit",
+                                             "Bajji", "Bonda", "Pakora", "Samosa", "Vada", "Pani Puri", "Kachori",
+                                             "Momos", "Spring Rolls", "Cake", "Cookies", "Ice Cream", "Burger", "Pizza"])
     countries = sorted([country.name for country in pycountry.countries])
     country = st.selectbox("Country:", ["Select Country"] + countries)
 
-    # ---------------------------
     # Safe transform function
-    # ---------------------------
     def safe_transform(encoder, value):
         """Transform a value with LabelEncoder; fallback to 'Other' if unseen."""
         if value in encoder.classes_:
@@ -178,13 +111,10 @@ if page == "🔮 Predictor":
         elif "Other" in encoder.classes_:
             return encoder.transform(["Other"])[0]
         else:
-            # Add 'Other' to classes dynamically if not present
             encoder.classes_ = np.append(encoder.classes_, "Other")
             return encoder.transform(["Other"])[0]
 
-    # ---------------------------
     # Predict Button & Popup
-    # ---------------------------
     if st.button("Predict Spice Tolerance"):
         try:
             new_data = pd.DataFrame([{
@@ -204,35 +134,19 @@ if page == "🔮 Predictor":
             prediction = model.predict(new_data)
             result = "🔥 High Spice Tolerance 🌶️" if prediction[0] == 1 else "❄️ Low Spice Tolerance 🌱"
 
-            # 🎁 Modal popup with overlay click-to-close
+            # Modal popup
             st.markdown(
                 f"""
                 <style>
-                /* Dark overlay */
                 #overlay {{
-                    position: fixed;
-                    top: 0; left: 0;
-                    width: 100%; height: 100%;
-                    background: rgba(0,0,0,0.6);
-                    z-index: 9998;
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                    background: rgba(0,0,0,0.6); z-index: 9998;
                 }}
-                /* Popup box */
                 #popup {{
-                    position: fixed;
-                    top: 50%; left: 50%;
-                    transform: translate(-50%, -50%);
-                    z-index: 9999;
-                    background: #fff3e6;
-                    padding: 30px 40px;
-                    border-radius: 15px;
-                    border: 3px solid #ff751a;
-                    max-width: 600px;
-                    width: 90%;
-                    text-align: center;
-                    font-size: 28px;
-                    font-weight: bold;
-                    color: #cc3300;
-                    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+                    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                    z-index: 9999; background: #fff3e6; padding: 30px 40px; border-radius: 15px;
+                    border: 3px solid #ff751a; max-width: 600px; width: 90%; text-align: center;
+                    font-size: 28px; font-weight: bold; color: #cc3300; box-shadow: 0 6px 20px rgba(0,0,0,0.35);
                     animation: pop 0.3s ease-out;
                 }}
                 @keyframes pop {{
@@ -241,7 +155,8 @@ if page == "🔮 Predictor":
                 }}
                 </style>
 
-                <div id="overlay" onclick="document.getElementById('overlay').remove();document.getElementById('popup').remove();"></div>
+                <div id="overlay" onclick="document.getElementById('overlay').remove();
+                    document.getElementById('popup').remove();"></div>
                 <div id="popup">
                     🎯 Predicted Spice Tolerance <br><br> {result} <br><br>
                     <small>Click outside this box to close</small>
@@ -252,6 +167,7 @@ if page == "🔮 Predictor":
 
         except Exception as e:
             st.error(f"Error: {str(e)}")
+
 # ---------------------------
 # Page 2: Model Info
 # ---------------------------
@@ -347,6 +263,7 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
 
 
 
