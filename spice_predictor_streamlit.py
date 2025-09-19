@@ -156,30 +156,46 @@ if page == "🔮 Predictor":
 
     # Modal
     if st.session_state.show_modal:
-        st.markdown(f"""
-            <style>
-            #overlay {{
-                position: fixed; top:0; left:0; width:100%; height:100%;
-                background: rgba(0,0,0,0.6); z-index:9998;
-            }}
-            #popup {{
-                position: fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-                z-index:9999; background:#fff3e6; padding:30px 40px; border-radius:15px;
-                border:3px solid #ff751a; max-width:600px; width:90%; text-align:center;
-                font-size:28px; font-weight:bold; color:#cc3300; box-shadow:0 6px 20px rgba(0,0,0,0.35);
-                animation: pop 0.3s ease-out;
-            }}
-            @keyframes pop {{
-                from {{ transform: translate(-50%,-50%) scale(0.8); opacity:0; }}
-                to {{ transform: translate(-50%,-50%) scale(1); opacity:1; }}
-            }}
-            </style>
-            <div id="overlay" onclick="window.parent.postMessage({{'close_modal': true}}, '*');"></div>
-            <div id="popup">
-                🎯 Predicted Spice Tolerance <br><br> {st.session_state.modal_result} <br><br>
-                <small>Click outside this box to close</small>
-            </div>
-        """, unsafe_allow_html=True)
+    # Modal HTML inside a form
+    st.markdown(f"""
+        <form action="" method="get">
+        <div style="
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.6); z-index:9998;">
+            <button type="submit" style="
+                width:100%; height:100%; border:none; background:none; cursor:pointer;">
+            </button>
+        </div>
+        <div style="
+            position: fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+            z-index:9999; background:#fff3e6; padding:30px 40px; border-radius:15px;
+            border:3px solid #ff751a; max-width:600px; width:90%; text-align:center;
+            font-size:28px; font-weight:bold; color:#cc3300; box-shadow:0 6px 20px rgba(0,0,0,0.35);">
+            🎯 Predicted Spice Tolerance <br><br> {st.session_state.modal_result} <br><br>
+            <small>Click outside this box to close</small>
+        </div>
+        </form>
+    """, unsafe_allow_html=True)
+
+    # Detect form submit (click outside) and reset
+    if st.experimental_get_query_params() != {}:  # form submit triggers query change
+        st.session_state.show_modal = False
+        st.session_state.modal_result = ""
+        # reset all inputs
+        st.session_state.age = None
+        st.session_state.spicy_freq = None
+        st.session_state.hot_drink = None
+        st.session_state.pain_threshold = None
+        st.session_state.gender_idx = 0
+        st.session_state.fav_cuisine_idx = 0
+        st.session_state.hometown_idx = 0
+        st.session_state.activity_idx = 0
+        st.session_state.family_idx = 0
+        st.session_state.likes_exotic_idx = 0
+        st.session_state.snack_idx = 0
+        st.session_state.country_idx = 0
+        st.experimental_set_query_params()  # clear query params
+
 
     # JS listener for modal close
     components.html("""
@@ -281,3 +297,4 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
