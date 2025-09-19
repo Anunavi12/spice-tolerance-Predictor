@@ -73,7 +73,7 @@ if "modal_result" not in st.session_state:
     st.session_state.modal_result = ""
 
 # ---------------------------
-# Safe transform
+# Safe transform function
 # ---------------------------
 def safe_transform(encoder, value):
     if value in encoder.classes_:
@@ -91,7 +91,7 @@ if page == "🔮 Predictor":
     st.title("🌶️ Spice Tolerance Predictor 🌶️")
     st.write("Predict whether someone has High or Low spice tolerance based on simple attributes.\n")
 
-    # Inputs with session_state reset capability
+    # Inputs with session_state support
     age = st.number_input("Age:", min_value=1, max_value=100, value=st.session_state.get("age", None), key="age")
     spicy_freq = st.number_input("Spicy frequency per week:", min_value=0, max_value=7, value=st.session_state.get("spicy_freq", None), key="spicy_freq")
     hot_drink = st.number_input("Hot drink tolerance (1-10):", min_value=1, max_value=10, value=st.session_state.get("hot_drink", None), key="hot_drink")
@@ -170,27 +170,27 @@ if page == "🔮 Predictor":
         )
 
 # ---------------------------
-# Listen for modal close via streamlit_event
+# Listen for modal close via Streamlit + JS
 # ---------------------------
 if "streamlit_javascript_events" not in st.session_state:
     st.session_state.streamlit_javascript_events = st.empty()
 
 js = """
 <script>
-window.addEventListener('message', event => {{
-    if(event.data.close_modal) {{
+window.addEventListener('message', event => {
+    if(event.data.close_modal) {
+        // Reload page to reset inputs
         window.location.reload();
-    }}
-}});
+    }
+});
 </script>
 """
 st.session_state.streamlit_javascript_events.markdown(js, unsafe_allow_html=True)
 
-
 # ---------------------------
-# Page 2: Model Info
+# Page 2: Model Info & Factors
 # ---------------------------
-elif page == "ℹ️ Model Info & Factors":
+if page == "ℹ️ Model Info & Factors":
     st.title("ℹ️ Model Info & Factor Explanation")
 
     # Intro text
@@ -220,81 +220,21 @@ elif page == "ℹ️ Model Info & Factors":
     st.markdown("""
     ---
     ### 🔍 Factors & Their Influence
+    1. **Age** - Younger people develop spice tolerance faster; older people may be more sensitive.
+    2. **Gender** - Men sometimes report higher spice tolerance; women may perceive heat stronger.
+    3. **Favorite Cuisine** - Exposure to spicy cuisine increases tolerance.
+    4. **Spicy Frequency per Week** - More frequent consumption increases tolerance.
+    5. **Hot Drink Tolerance** - Higher tolerance to hot drinks correlates with spice tolerance.
+    6. **Pain Threshold** - Higher pain tolerance allows handling stronger spices.
+    7. **Hometown Climate** - Hot regions usually have higher spice tolerance.
+    8. **Activity Level** - Active individuals may metabolize capsaicin faster.
+    9. **Family Eats Spicy** - Learned behavior from family meals.
+    10. **Likes Exotic Food** - Willingness to try new foods correlates with higher tolerance.
+    11. **Favorite Snack** - Snack preference can influence spice-seeking behavior.
+    12. **Country** - Cultural dietary patterns strongly affect spice tolerance.
 
-    **1. Age**  
-    - Younger people often develop spice tolerance faster since repeated exposure shapes taste preference.  
-    - Older individuals may experience reduced tolerance due to slower metabolism and increased oral sensitivity.  
-    - *Scientific Note*: Aging reduces the density of taste buds and nerve sensitivity, impacting spice tolerance.
-
-    **2. Gender**  
-    - Some studies suggest men may report higher spice tolerance, partly due to cultural norms of "spice bravery".  
-    - Women often have stronger sensory perception, which can make spices feel more intense.  
-    - *Scientific Note*: Hormonal differences can influence sensory perception, especially heat and pain thresholds.
-
-    **3. Favorite Cuisine**  
-    - Regular exposure to naturally spicy cuisines (e.g., Indian, Mexican, Thai) builds desensitization of TRPV1 pain receptors.  
-    - Western cuisines (e.g., Italian, American) generally use less chili, leading to lower adaptation.
-
-    **4. Spicy Frequency per Week**  
-    - Directly correlated: the more often you eat chili, the more your brain learns to downregulate the pain response.  
-    - *Scientific Note*: Repeated exposure decreases activation of capsaicin-sensitive nerve endings.
-
-    **5. Hot Drink Tolerance (1-10)**  
-    - If you tolerate very hot beverages, your oral tissues are less sensitive to burning sensations.  
-    - This overlaps with the sensation caused by chili heat (burning pain).  
-
-    **6. Pain Threshold (1-10)**  
-    - Capsaicin activates the same receptors that signal pain.  
-    - People with higher natural pain tolerance can usually handle stronger spice levels.  
-
-    **7. Hometown Climate**  
-    - Hot regions historically consume more spicy foods (India, Mexico, Thailand).  
-    - Spices help with food preservation and may trigger sweating, cooling the body.  
-    - Cold regions (e.g., Northern Europe) traditionally used milder foods.  
-
-    **8. Activity Level**  
-    - Active individuals may metabolize capsaicin faster, reducing perceived intensity.  
-    - Sedentary lifestyles may lead to stronger perception of heat.  
-
-    **9. Family Eats Spicy?**  
-    - Spice tolerance is heavily learned through family meals.  
-    - Children in spicy-food households adapt early, making spice "normal".  
-
-    **10. Likes Exotic Food?**  
-    - Openness to new flavors usually means higher willingness to tolerate strong tastes like spice.  
-    - *Scientific Note*: Personality traits (like sensation seeking) are linked with enjoying spice.  
-
-    **11. Favorite Snack**  
-    - Salty & crunchy snacks (chips, nuts) are often consumed with chili-based seasonings.  
-    - Sweet snacks (chocolate, fruit) are linked with lower spice-seeking behavior.  
-
-    **12. Country**  
-    - Cultural dietary patterns strongly affect spice tolerance.  
-    - Example: India, Thailand, and Mexico -> High tolerance is common.  
-    - Example: Northern Europe, Japan -> Generally lower spice tolerance.  
-
-    ---
-    ### 🧠 Model Used:
+    ### 🧠 Model Used
     - **Algorithm**: Random Forest Classifier (100 trees)  
     - **Target**: `Spice_Tolerance` (High = 1, Low = 0)  
-    - **Training Data**: 100 synthetic records  
-
-    👈 Use the sidebar to switch back and try your own predictions!
-
+    - **Training Data**: 100 synthetic records
     """)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
