@@ -175,6 +175,14 @@ if page == "🔮 Predictor":
     # Country dropdown
     countries = sorted([country.name for country in pycountry.countries])
     country = st.selectbox("Country:", ["Select Country"] + countries)
+    # Prediction button
+if st.button("🔮 Predict Spice Tolerance"):
+    # Simple placeholder logic (you can replace this with your model)
+    if spicy_freq >= 4 or hot_drink >= 7 or pain_threshold >= 7:
+        st.success("🔥 High Spice Tolerance!")
+    else:
+        st.warning("🌱 Low Spice Tolerance.")
+
 # ---------------------------
 # Page 2: Model Info
 # ---------------------------
@@ -270,6 +278,7 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
 
 
 
