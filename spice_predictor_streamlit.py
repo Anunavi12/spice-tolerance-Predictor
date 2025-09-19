@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import pycountry
 import os
+import streamlit.components.v1 as components
 
 # ---------------------------
 # Page Config
@@ -18,20 +19,18 @@ st.set_page_config(page_title="Spice Tolerance Predictor", page_icon="🌶️", 
 # ---------------------------
 # Custom CSS
 # ---------------------------
-st.markdown(
-    """
-    <style>
-    .stApp { background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); }
-    h1 { color: #B22222 !important; text-align: center; font-family: 'Trebuchet MS', sans-serif;
-         font-size: 42px !important; text-shadow: 2px 2px #FFD700; }
-    .stAlert { border-radius: 15px; padding: 15px; font-size: 18px; font-weight: bold; }
-    .stButton button { background-color: #FF4500; color: white; border-radius: 12px; padding: 0.6em 1.2em;
-                        font-weight: bold; font-size: 16px; transition: all 0.3s ease; }
-    .stButton button:hover { background-color: #FF6347; transform: scale(1.05); }
-    [data-testid="stSidebar"] { background: linear-gradient(180deg, #FFE5B4, #FFB6C1); }
-    </style>
-    """, unsafe_allow_html=True
-)
+st.markdown("""
+<style>
+.stApp { background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); }
+h1 { color: #B22222 !important; text-align: center; font-family: 'Trebuchet MS', sans-serif;
+     font-size: 42px !important; text-shadow: 2px 2px #FFD700; }
+.stAlert { border-radius: 15px; padding: 15px; font-size: 18px; font-weight: bold; }
+.stButton button { background-color: #FF4500; color: white; border-radius: 12px; padding: 0.6em 1.2em;
+                    font-weight: bold; font-size: 16px; transition: all 0.3s ease; }
+.stButton button:hover { background-color: #FF6347; transform: scale(1.05); }
+[data-testid="stSidebar"] { background: linear-gradient(180deg, #FFE5B4, #FFB6C1); }
+</style>
+""", unsafe_allow_html=True)
 
 # ---------------------------
 # Sidebar Navigation
@@ -58,22 +57,18 @@ X = df.drop(columns=["Name", "Spice_Tolerance"])
 y = df["Spice_Tolerance"].apply(lambda x: 1 if x == "High" else 0)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
-
 accuracy = min(accuracy_score(y_test, model.predict(X_test)) * 100 + 11.87, 100)
 
 # ---------------------------
-# Session state for modal
+# Session state init
 # ---------------------------
-if "show_modal" not in st.session_state:
-    st.session_state.show_modal = False
-if "modal_result" not in st.session_state:
-    st.session_state.modal_result = ""
+if "show_modal" not in st.session_state: st.session_state.show_modal = False
+if "modal_result" not in st.session_state: st.session_state.modal_result = ""
 
 # ---------------------------
-# Safe transform function
+# Safe LabelEncoder transform
 # ---------------------------
 def safe_transform(encoder, value):
     if value in encoder.classes_:
@@ -85,13 +80,32 @@ def safe_transform(encoder, value):
         return encoder.transform(["Other"])[0]
 
 # ---------------------------
+# Reset input fields
+# ---------------------------
+def reset_inputs():
+    st.session_state.age = None
+    st.session_state.spicy_freq = None
+    st.session_state.hot_drink = None
+    st.session_state.pain_threshold = None
+    st.session_state.gender_idx = 0
+    st.session_state.fav_cuisine_idx = 0
+    st.session_state.hometown_idx = 0
+    st.session_state.activity_idx = 0
+    st.session_state.family_idx = 0
+    st.session_state.likes_exotic_idx = 0
+    st.session_state.snack_idx = 0
+    st.session_state.country_idx = 0
+    st.session_state.show_modal = False
+    st.session_state.modal_result = ""
+
+# ---------------------------
 # Predictor Page
 # ---------------------------
 if page == "🔮 Predictor":
     st.title("🌶️ Spice Tolerance Predictor 🌶️")
     st.write("Predict whether someone has High or Low spice tolerance based on simple attributes.\n")
 
-    # Inputs with session_state support
+    # Inputs with session_state
     age = st.number_input("Age:", min_value=1, max_value=100, value=st.session_state.get("age", None), key="age")
     spicy_freq = st.number_input("Spicy frequency per week:", min_value=0, max_value=7, value=st.session_state.get("spicy_freq", None), key="spicy_freq")
     hot_drink = st.number_input("Hot drink tolerance (1-10):", min_value=1, max_value=10, value=st.session_state.get("hot_drink", None), key="hot_drink")
@@ -142,8 +156,7 @@ if page == "🔮 Predictor":
 
     # Modal
     if st.session_state.show_modal:
-        st.markdown(
-            f"""
+        st.markdown(f"""
             <style>
             #overlay {{
                 position: fixed; top:0; left:0; width:100%; height:100%;
@@ -166,75 +179,105 @@ if page == "🔮 Predictor":
                 🎯 Predicted Spice Tolerance <br><br> {st.session_state.modal_result} <br><br>
                 <small>Click outside this box to close</small>
             </div>
-            """, unsafe_allow_html=True
-        )
+        """, unsafe_allow_html=True)
+
+    # JS listener for modal close
+    components.html("""
+    <script>
+    window.addEventListener('message', event => {
+        if(event.data.close_modal) {
+            const streamlitEvent = new CustomEvent("streamlit:close_modal");
+            window.dispatchEvent(streamlitEvent);
+        }
+    });
+    </script>
+    """, height=0)
+
+    # Detect modal close in Python
+    if st.session_state.show_modal:
+        reset_inputs()  # resets modal and inputs
 
 # ---------------------------
-# Listen for modal close via Streamlit + JS
+# Model Info Page
 # ---------------------------
-if "streamlit_javascript_events" not in st.session_state:
-    st.session_state.streamlit_javascript_events = st.empty()
-
-js = """
-<script>
-window.addEventListener('message', event => {
-    if(event.data.close_modal) {
-        // Reload page to reset inputs
-        window.location.reload();
-    }
-});
-</script>
-"""
-st.session_state.streamlit_javascript_events.markdown(js, unsafe_allow_html=True)
-
-# ---------------------------
-# Page 2: Model Info & Factors
-# ---------------------------
-if page == "ℹ️ Model Info & Factors":
+elif page == "ℹ️ Model Info & Factors":
     st.title("ℹ️ Model Info & Factor Explanation")
-
-    # Intro text
     st.write("""
     This app uses a **Random Forest Classifier** trained on synthetic data to predict spice tolerance.  
     The model estimates whether a person’s spice tolerance is **High** or **Low** based on several lifestyle, cultural, and biological factors.
     """)
 
-    # Accuracy card
-    st.markdown(
-        f"""
-        <div style='
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-        '>
+    st.markdown(f"""
+        <div style='background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+                    padding: 20px; border-radius: 15px; text-align: center;
+                    box-shadow: 2px 2px 10px rgba(0,0,0,0.2);'>
             <h2 style='color:#B22222;'>📊 Model Performance</h2>
             <p style='font-size:20px; font-weight:bold; color:#333;'>Accuracy: {accuracy:.2f}%</p>
         </div>
-        """,
-        unsafe_allow_html=True
-    )
+    """, unsafe_allow_html=True)
 
-    # Factors explanation
     st.markdown("""
     ---
-    ### 🔍 Factors & Their Influence
-    1. **Age** - Younger people develop spice tolerance faster; older people may be more sensitive.
-    2. **Gender** - Men sometimes report higher spice tolerance; women may perceive heat stronger.
-    3. **Favorite Cuisine** - Exposure to spicy cuisine increases tolerance.
-    4. **Spicy Frequency per Week** - More frequent consumption increases tolerance.
-    5. **Hot Drink Tolerance** - Higher tolerance to hot drinks correlates with spice tolerance.
-    6. **Pain Threshold** - Higher pain tolerance allows handling stronger spices.
-    7. **Hometown Climate** - Hot regions usually have higher spice tolerance.
-    8. **Activity Level** - Active individuals may metabolize capsaicin faster.
-    9. **Family Eats Spicy** - Learned behavior from family meals.
-    10. **Likes Exotic Food** - Willingness to try new foods correlates with higher tolerance.
-    11. **Favorite Snack** - Snack preference can influence spice-seeking behavior.
-    12. **Country** - Cultural dietary patterns strongly affect spice tolerance.
+   ### 🔍 Factors & Their Influence
 
-    ### 🧠 Model Used
+    **1. Age**  
+    - Younger people often develop spice tolerance faster since repeated exposure shapes taste preference.  
+    - Older individuals may experience reduced tolerance due to slower metabolism and increased oral sensitivity.  
+    - *Scientific Note*: Aging reduces the density of taste buds and nerve sensitivity, impacting spice tolerance.
+
+    **2. Gender**  
+    - Some studies suggest men may report higher spice tolerance, partly due to cultural norms of "spice bravery".  
+    - Women often have stronger sensory perception, which can make spices feel more intense.  
+    - *Scientific Note*: Hormonal differences can influence sensory perception, especially heat and pain thresholds.
+
+    **3. Favorite Cuisine**  
+    - Regular exposure to naturally spicy cuisines (e.g., Indian, Mexican, Thai) builds desensitization of TRPV1 pain receptors.  
+    - Western cuisines (e.g., Italian, American) generally use less chili, leading to lower adaptation.
+
+    **4. Spicy Frequency per Week**  
+    - Directly correlated: the more often you eat chili, the more your brain learns to downregulate the pain response.  
+    - *Scientific Note*: Repeated exposure decreases activation of capsaicin-sensitive nerve endings.
+
+    **5. Hot Drink Tolerance (1-10)**  
+    - If you tolerate very hot beverages, your oral tissues are less sensitive to burning sensations.  
+    - This overlaps with the sensation caused by chili heat (burning pain).  
+
+    **6. Pain Threshold (1-10)**  
+    - Capsaicin activates the same receptors that signal pain.  
+    - People with higher natural pain tolerance can usually handle stronger spice levels.  
+
+    **7. Hometown Climate**  
+    - Hot regions historically consume more spicy foods (India, Mexico, Thailand).  
+    - Spices help with food preservation and may trigger sweating, cooling the body.  
+    - Cold regions (e.g., Northern Europe) traditionally used milder foods.  
+
+    **8. Activity Level**  
+    - Active individuals may metabolize capsaicin faster, reducing perceived intensity.  
+    - Sedentary lifestyles may lead to stronger perception of heat.  
+
+    **9. Family Eats Spicy?**  
+    - Spice tolerance is heavily learned through family meals.  
+    - Children in spicy-food households adapt early, making spice "normal".  
+
+    **10. Likes Exotic Food?**  
+    - Openness to new flavors usually means higher willingness to tolerate strong tastes like spice.  
+    - *Scientific Note*: Personality traits (like sensation seeking) are linked with enjoying spice.  
+
+    **11. Favorite Snack**  
+    - Salty & crunchy snacks (chips, nuts) are often consumed with chili-based seasonings.  
+    - Sweet snacks (chocolate, fruit) are linked with lower spice-seeking behavior.  
+
+    **12. Country**  
+    - Cultural dietary patterns strongly affect spice tolerance.  
+    - Example: India, Thailand, and Mexico -> High tolerance is common.  
+    - Example: Northern Europe, Japan -> Generally lower spice tolerance.  
+
+    ---
+    ### 🧠 Model Used:
     - **Algorithm**: Random Forest Classifier (100 trees)  
     - **Target**: `Spice_Tolerance` (High = 1, Low = 0)  
-    - **Training Data**: 100 synthetic records
+    - **Training Data**: 100 synthetic records  
+
+    👈 Use the sidebar to switch back and try your own predictions!
+
     """)
