@@ -185,51 +185,73 @@ if page == "🔮 Predictor":
     countries = sorted([country.name for country in pycountry.countries])
     country = st.selectbox("Country:", ["Select Country"] + countries)
 
-    # Predict Button
     if st.button("Predict Spice Tolerance"):
-        try:
-            new_data = pd.DataFrame([{
-                "Age": age,
-                "Gender": encoders["Gender"].transform([gender])[0],
-                "Favorite_Cuisine": encoders["Favorite_Cuisine"].transform([fav_cuisine])[0],
-                "Spicy_Freq_Per_Week": spicy_freq,
-                "Hot_Drink_Tolerance": hot_drink,
-                "Pain_Threshold": pain_threshold,
-                "Hometown_Climate": encoders["Hometown_Climate"].transform([hometown])[0],
-                "Activity_Level": encoders["Activity_Level"].transform([activity_mapped])[0],
-                "Family_Spicy": encoders["Family_Spicy"].transform([family])[0],
-                "Likes_Exotic": encoders["Likes_Exotic"].transform([likes_exotic])[0],
-                "Favorite_Snack": encoders["Favorite_Snack"].transform([snack])[0]
-            }])
-            
-            prediction = model.predict(new_data)
-            result = "🔥 High Spice Tolerance 🌶️" if prediction[0] == 1 else "❄️ Low Spice Tolerance 🌱"
+    try:
+        new_data = pd.DataFrame([{
+            "Age": age,
+            "Gender": encoders["Gender"].transform([gender])[0],
+            "Favorite_Cuisine": encoders["Favorite_Cuisine"].transform([fav_cuisine])[0],
+            "Spicy_Freq_Per_Week": spicy_freq,
+            "Hot_Drink_Tolerance": hot_drink,
+            "Pain_Threshold": pain_threshold,
+            "Hometown_Climate": encoders["Hometown_Climate"].transform([hometown])[0],
+            "Activity_Level": encoders["Activity_Level"].transform([activity_mapped])[0],
+            "Family_Spicy": encoders["Family_Spicy"].transform([family])[0],
+            "Likes_Exotic": encoders["Likes_Exotic"].transform([likes_exotic])[0],
+            "Favorite_Snack": encoders["Favorite_Snack"].transform([snack])[0]
+        }])
 
-            # 🎁 Centered result box (like a popup card)
-            st.markdown(
-                f"""
-                <div style="display: flex; justify-content: center; align-items: center; margin-top: 50px;">
-                    <div style="
-                        background: #fff3e6; 
-                        padding: 30px 40px; 
-                        border-radius: 15px; 
-                        border: 3px solid #ff751a;
-                        max-width: 600px; 
-                        width: 90%; 
-                        text-align: center; 
-                        font-size: 28px; 
-                        font-weight: bold; 
-                        color: #cc3300; 
-                        box-shadow: 0 6px 16px rgba(0,0,0,0.25);">
-                        🎯 Predicted Spice Tolerance <br><br> {result}
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+        prediction = model.predict(new_data)
+        result = "🔥 High Spice Tolerance 🌶️" if prediction[0] == 1 else "❄️ Low Spice Tolerance 🌱"
 
-        except Exception as e:
-            st.error(f"Error: {str(e)}")
+        # 🎁 Modal popup effect
+        st.markdown(
+            f"""
+            <style>
+            /* Dark overlay */
+            #overlay {{
+                position: fixed;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: rgba(0,0,0,0.6);
+                z-index: 9998;
+            }}
+            /* Popup box */
+            #popup {{
+                position: fixed;
+                top: 50%; left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 9999;
+                background: #fff3e6;
+                padding: 30px 40px;
+                border-radius: 15px;
+                border: 3px solid #ff751a;
+                max-width: 600px;
+                width: 90%;
+                text-align: center;
+                font-size: 28px;
+                font-weight: bold;
+                color: #cc3300;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+                animation: pop 0.3s ease-out;
+            }}
+            @keyframes pop {{
+                from {{ transform: translate(-50%, -50%) scale(0.8); opacity: 0; }}
+                to {{ transform: translate(-50%, -50%) scale(1); opacity: 1; }}
+            }}
+            </style>
+
+            <div id="overlay"></div>
+            <div id="popup">
+                🎯 Predicted Spice Tolerance <br><br> {result}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    except Exception as e:
+        st.error(f"Error: {str(e)}")
+
 
 # ---------------------------
 # Page 2: Model Info
@@ -326,6 +348,7 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
 
 
 
