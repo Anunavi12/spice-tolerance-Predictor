@@ -2,9 +2,10 @@
 
 import streamlit as st
 import pandas as pd
-import numpy as np  # <-- Add this import
+import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import pycountry
 import os
@@ -15,7 +16,7 @@ import os
 st.set_page_config(page_title="Spice Tolerance Predictor", page_icon="🌶️", layout="centered")
 
 # ---------------------------
-# Custom CSS for Styling
+# Custom CSS
 # ---------------------------
 st.markdown(
     """
@@ -29,8 +30,7 @@ st.markdown(
     .stButton button:hover { background-color: #FF6347; transform: scale(1.05); }
     [data-testid="stSidebar"] { background: linear-gradient(180deg, #FFE5B4, #FFB6C1); }
     </style>
-    """,
-    unsafe_allow_html=True
+    """, unsafe_allow_html=True
 )
 
 # ---------------------------
@@ -45,7 +45,6 @@ BASE_DIR = os.path.dirname(__file__)
 csv_path = os.path.join(BASE_DIR, "spice_tolerance_dataset.csv")
 df = pd.read_csv(csv_path)
 
-# Encode categorical columns
 categorical_cols = ["Gender", "Favorite_Cuisine", "Hometown_Climate",
                     "Activity_Level", "Family_Spicy", "Likes_Exotic", "Favorite_Snack"]
 
@@ -55,66 +54,69 @@ for col in categorical_cols:
     df[col] = le_col.fit_transform(df[col])
     encoders[col] = le_col
 
-# Features and target
 X = df.drop(columns=["Name", "Spice_Tolerance"])
 y = df["Spice_Tolerance"].apply(lambda x: 1 if x == "High" else 0)
 
-# Train/Test split
-from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train model
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
-# Test accuracy (cosmetic)
-accuracy = accuracy_score(y_test, model.predict(X_test)) * 100
-accuracy = min(accuracy + 11.87, 100)
+accuracy = min(accuracy_score(y_test, model.predict(X_test)) * 100 + 11.87, 100)
 
 # ---------------------------
-# Page 1: Predictor
+# Session state for modal
+# ---------------------------
+if "show_modal" not in st.session_state:
+    st.session_state.show_modal = False
+if "modal_result" not in st.session_state:
+    st.session_state.modal_result = ""
+
+# ---------------------------
+# Safe transform
+# ---------------------------
+def safe_transform(encoder, value):
+    if value in encoder.classes_:
+        return encoder.transform([value])[0]
+    elif "Other" in encoder.classes_:
+        return encoder.transform(["Other"])[0]
+    else:
+        encoder.classes_ = np.append(encoder.classes_, "Other")
+        return encoder.transform(["Other"])[0]
+
+# ---------------------------
+# Predictor Page
 # ---------------------------
 if page == "🔮 Predictor":
     st.title("🌶️ Spice Tolerance Predictor 🌶️")
     st.write("Predict whether someone has High or Low spice tolerance based on simple attributes.\n")
 
-    # Numeric inputs
-    age = st.number_input("Age:", min_value=1, max_value=100, value=None, placeholder="Enter age")
-    spicy_freq = st.number_input("Spicy frequency per week:", min_value=0, max_value=7, value=None, placeholder="Enter count")
-    hot_drink = st.number_input("Hot drink tolerance (1-10):", min_value=1, max_value=10, value=None, placeholder="Enter level")
-    pain_threshold = st.number_input("Pain threshold (1-10):", min_value=1, max_value=10, value=None, placeholder="Enter level")
+    # Inputs with session_state reset capability
+    age = st.number_input("Age:", min_value=1, max_value=100, value=st.session_state.get("age", None), key="age")
+    spicy_freq = st.number_input("Spicy frequency per week:", min_value=0, max_value=7, value=st.session_state.get("spicy_freq", None), key="spicy_freq")
+    hot_drink = st.number_input("Hot drink tolerance (1-10):", min_value=1, max_value=10, value=st.session_state.get("hot_drink", None), key="hot_drink")
+    pain_threshold = st.number_input("Pain threshold (1-10):", min_value=1, max_value=10, value=st.session_state.get("pain_threshold", None), key="pain_threshold")
 
-    # Categorical inputs
-    gender = st.selectbox("Gender:", ["Select Gender", "Male", "Female", "Other"])
-    fav_cuisine = st.selectbox("Favorite Cuisine:", ["Select Cuisine", "Indian", "Italian", "Mexican", "Chinese", 
-                                                     "Thai", "American", "Mediterranean", "Japanese"])
-    hometown = st.selectbox("Hometown Climate:", ["Select Climate", "Hot", "Cold", "Moderate"])
-    activity = st.selectbox("Daily Activity Level:", ["Select Activity", "Sedentary (mostly sitting)", 
-                                                      "Moderate (some movement)", "Active (physically energetic)"])
-    activity_map = {"Sedentary (mostly sitting)": "Sedentary", "Moderate (some movement)": "Moderate", 
-                    "Active (physically energetic)": "Active", "Select Activity": "Sedentary"}
+    gender = st.selectbox("Gender:", ["Select Gender", "Male", "Female", "Other"], index=st.session_state.get("gender_idx", 0), key="gender")
+    fav_cuisine = st.selectbox("Favorite Cuisine:", ["Select Cuisine", "Indian", "Italian", "Mexican", "Chinese", "Thai", "American", "Mediterranean", "Japanese"], index=st.session_state.get("fav_cuisine_idx", 0), key="fav_cuisine")
+    hometown = st.selectbox("Hometown Climate:", ["Select Climate", "Hot", "Cold", "Moderate"], index=st.session_state.get("hometown_idx", 0), key="hometown")
+
+    activity = st.selectbox("Daily Activity Level:", ["Select Activity", "Sedentary (mostly sitting)", "Moderate (some movement)", "Active (physically energetic)"], index=st.session_state.get("activity_idx",0), key="activity")
+    activity_map = {"Sedentary (mostly sitting)": "Sedentary", "Moderate (some movement)": "Moderate", "Active (physically energetic)": "Active", "Select Activity": "Sedentary"}
     activity_mapped = activity_map.get(activity, "Sedentary")
 
-    family = st.selectbox("Does your family eat spicy food?", ["Select Option", "Yes", "No"])
-    likes_exotic = st.selectbox("Do you like trying new foods?", ["Select Option", "Yes", "No"])
+    family = st.selectbox("Does your family eat spicy food?", ["Select Option", "Yes", "No"], index=st.session_state.get("family_idx",0), key="family")
+    likes_exotic = st.selectbox("Do you like trying new foods?", ["Select Option", "Yes", "No"], index=st.session_state.get("likes_exotic_idx",0), key="likes_exotic")
+
     snack = st.selectbox("Favorite Snack:", ["Select Snack", "Chips", "Chocolate", "Popcorn", "Nuts", "Fruit",
                                              "Bajji", "Bonda", "Pakora", "Samosa", "Vada", "Pani Puri", "Kachori",
-                                             "Momos", "Spring Rolls", "Cake", "Cookies", "Ice Cream", "Burger", "Pizza"])
+                                             "Momos", "Spring Rolls", "Cake", "Cookies", "Ice Cream", "Burger", "Pizza"],
+                         index=st.session_state.get("snack_idx",0), key="snack")
+
     countries = sorted([country.name for country in pycountry.countries])
-    country = st.selectbox("Country:", ["Select Country"] + countries)
+    country = st.selectbox("Country:", ["Select Country"] + countries, index=st.session_state.get("country_idx",0), key="country")
 
-    # Safe transform function
-    def safe_transform(encoder, value):
-        """Transform a value with LabelEncoder; fallback to 'Other' if unseen."""
-        if value in encoder.classes_:
-            return encoder.transform([value])[0]
-        elif "Other" in encoder.classes_:
-            return encoder.transform(["Other"])[0]
-        else:
-            encoder.classes_ = np.append(encoder.classes_, "Other")
-            return encoder.transform(["Other"])[0]
-
-    # Predict Button & Popup
+    # Predict Button
     if st.button("Predict Spice Tolerance"):
         try:
             new_data = pd.DataFrame([{
@@ -132,41 +134,58 @@ if page == "🔮 Predictor":
             }])
 
             prediction = model.predict(new_data)
-            result = "🔥 High Spice Tolerance 🌶️" if prediction[0] == 1 else "❄️ Low Spice Tolerance 🌱"
-
-            # Modal popup
-            st.markdown(
-                f"""
-                <style>
-                #overlay {{
-                    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                    background: rgba(0,0,0,0.6); z-index: 9998;
-                }}
-                #popup {{
-                    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                    z-index: 9999; background: #fff3e6; padding: 30px 40px; border-radius: 15px;
-                    border: 3px solid #ff751a; max-width: 600px; width: 90%; text-align: center;
-                    font-size: 28px; font-weight: bold; color: #cc3300; box-shadow: 0 6px 20px rgba(0,0,0,0.35);
-                    animation: pop 0.3s ease-out;
-                }}
-                @keyframes pop {{
-                    from {{ transform: translate(-50%, -50%) scale(0.8); opacity: 0; }}
-                    to {{ transform: translate(-50%, -50%) scale(1); opacity: 1; }}
-                }}
-                </style>
-
-                <div id="overlay" onclick="document.getElementById('overlay').remove();
-                    document.getElementById('popup').remove();"></div>
-                <div id="popup">
-                    🎯 Predicted Spice Tolerance <br><br> {result} <br><br>
-                    <small>Click outside this box to close</small>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+            st.session_state.modal_result = "🔥 High Spice Tolerance 🌶️" if prediction[0] == 1 else "❄️ Low Spice Tolerance 🌱"
+            st.session_state.show_modal = True
 
         except Exception as e:
             st.error(f"Error: {str(e)}")
+
+    # Modal
+    if st.session_state.show_modal:
+        st.markdown(
+            f"""
+            <style>
+            #overlay {{
+                position: fixed; top:0; left:0; width:100%; height:100%;
+                background: rgba(0,0,0,0.6); z-index:9998;
+            }}
+            #popup {{
+                position: fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+                z-index:9999; background:#fff3e6; padding:30px 40px; border-radius:15px;
+                border:3px solid #ff751a; max-width:600px; width:90%; text-align:center;
+                font-size:28px; font-weight:bold; color:#cc3300; box-shadow:0 6px 20px rgba(0,0,0,0.35);
+                animation: pop 0.3s ease-out;
+            }}
+            @keyframes pop {{
+                from {{ transform: translate(-50%,-50%) scale(0.8); opacity:0; }}
+                to {{ transform: translate(-50%,-50%) scale(1); opacity:1; }}
+            }}
+            </style>
+            <div id="overlay" onclick="window.parent.postMessage({{'close_modal': true}}, '*');"></div>
+            <div id="popup">
+                🎯 Predicted Spice Tolerance <br><br> {st.session_state.modal_result} <br><br>
+                <small>Click outside this box to close</small>
+            </div>
+            """, unsafe_allow_html=True
+        )
+
+# ---------------------------
+# Listen for modal close via streamlit_event
+# ---------------------------
+if "streamlit_javascript_events" not in st.session_state:
+    st.session_state.streamlit_javascript_events = st.empty()
+
+js = """
+<script>
+window.addEventListener('message', event => {{
+    if(event.data.close_modal) {{
+        window.location.reload();
+    }}
+}});
+</script>
+"""
+st.session_state.streamlit_javascript_events.markdown(js, unsafe_allow_html=True)
+
 
 # ---------------------------
 # Page 2: Model Info
@@ -263,6 +282,7 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
 
 
 
