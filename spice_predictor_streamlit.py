@@ -97,7 +97,6 @@ def reset_inputs():
     st.session_state.country_idx = 0
     st.session_state.show_modal = False
     st.session_state.modal_result = ""
-
 # ---------------------------
 # Predictor Page
 # ---------------------------
@@ -106,29 +105,45 @@ if page == "🔮 Predictor":
     st.write("Predict whether someone has High or Low spice tolerance based on simple attributes.\n")
 
     # Inputs with session_state
-    age = st.number_input("Age:", min_value=1, max_value=100, value=st.session_state.get("age", None), key="age")
-    spicy_freq = st.number_input("Spicy frequency per week:", min_value=0, max_value=7, value=st.session_state.get("spicy_freq", None), key="spicy_freq")
-    hot_drink = st.number_input("Hot drink tolerance (1-10):", min_value=1, max_value=10, value=st.session_state.get("hot_drink", None), key="hot_drink")
-    pain_threshold = st.number_input("Pain threshold (1-10):", min_value=1, max_value=10, value=st.session_state.get("pain_threshold", None), key="pain_threshold")
+    age = st.number_input("Age:", min_value=1, max_value=100,
+                          value=st.session_state.get("age", None), key="age")
+    spicy_freq = st.number_input("Spicy frequency per week:", min_value=0, max_value=7,
+                                 value=st.session_state.get("spicy_freq", None), key="spicy_freq")
+    hot_drink = st.number_input("Hot drink tolerance (1-10):", min_value=1, max_value=10,
+                                value=st.session_state.get("hot_drink", None), key="hot_drink")
+    pain_threshold = st.number_input("Pain threshold (1-10):", min_value=1, max_value=10,
+                                     value=st.session_state.get("pain_threshold", None), key="pain_threshold")
 
-    gender = st.selectbox("Gender:", ["Select Gender", "Male", "Female", "Other"], index=st.session_state.get("gender_idx", 0), key="gender")
-    fav_cuisine = st.selectbox("Favorite Cuisine:", ["Select Cuisine", "Indian", "Italian", "Mexican", "Chinese", "Thai", "American", "Mediterranean", "Japanese"], index=st.session_state.get("fav_cuisine_idx", 0), key="fav_cuisine")
-    hometown = st.selectbox("Hometown Climate:", ["Select Climate", "Hot", "Cold", "Moderate"], index=st.session_state.get("hometown_idx", 0), key="hometown")
-
-    activity = st.selectbox("Daily Activity Level:", ["Select Activity", "Sedentary (mostly sitting)", "Moderate (some movement)", "Active (physically energetic)"], index=st.session_state.get("activity_idx",0), key="activity")
-    activity_map = {"Sedentary (mostly sitting)": "Sedentary", "Moderate (some movement)": "Moderate", "Active (physically energetic)": "Active", "Select Activity": "Sedentary"}
+    gender = st.selectbox("Gender:", ["Select Gender", "Male", "Female", "Other"],
+                          index=st.session_state.get("gender_idx", 0), key="gender")
+    fav_cuisine = st.selectbox("Favorite Cuisine:", ["Select Cuisine", "Indian", "Italian",
+                                                     "Mexican", "Chinese", "Thai", "American",
+                                                     "Mediterranean", "Japanese"],
+                               index=st.session_state.get("fav_cuisine_idx", 0), key="fav_cuisine")
+    hometown = st.selectbox("Hometown Climate:", ["Select Climate", "Hot", "Cold", "Moderate"],
+                            index=st.session_state.get("hometown_idx", 0), key="hometown")
+    activity = st.selectbox("Daily Activity Level:", ["Select Activity",
+                                                     "Sedentary (mostly sitting)",
+                                                     "Moderate (some movement)",
+                                                     "Active (physically energetic)"],
+                            index=st.session_state.get("activity_idx",0), key="activity")
+    activity_map = {"Sedentary (mostly sitting)": "Sedentary",
+                    "Moderate (some movement)": "Moderate",
+                    "Active (physically energetic)": "Active",
+                    "Select Activity": "Sedentary"}
     activity_mapped = activity_map.get(activity, "Sedentary")
 
-    family = st.selectbox("Does your family eat spicy food?", ["Select Option", "Yes", "No"], index=st.session_state.get("family_idx",0), key="family")
-    likes_exotic = st.selectbox("Do you like trying new foods?", ["Select Option", "Yes", "No"], index=st.session_state.get("likes_exotic_idx",0), key="likes_exotic")
-
+    family = st.selectbox("Does your family eat spicy food?", ["Select Option", "Yes", "No"],
+                          index=st.session_state.get("family_idx",0), key="family")
+    likes_exotic = st.selectbox("Do you like trying new foods?", ["Select Option", "Yes", "No"],
+                                index=st.session_state.get("likes_exotic_idx",0), key="likes_exotic")
     snack = st.selectbox("Favorite Snack:", ["Select Snack", "Chips", "Chocolate", "Popcorn", "Nuts", "Fruit",
                                              "Bajji", "Bonda", "Pakora", "Samosa", "Vada", "Pani Puri", "Kachori",
                                              "Momos", "Spring Rolls", "Cake", "Cookies", "Ice Cream", "Burger", "Pizza"],
                          index=st.session_state.get("snack_idx",0), key="snack")
-
     countries = sorted([country.name for country in pycountry.countries])
-    country = st.selectbox("Country:", ["Select Country"] + countries, index=st.session_state.get("country_idx",0), key="country")
+    country = st.selectbox("Country:", ["Select Country"] + countries,
+                           index=st.session_state.get("country_idx",0), key="country")
 
     # Predict Button
     if st.button("Predict Spice Tolerance"):
@@ -146,72 +161,39 @@ if page == "🔮 Predictor":
                 "Likes_Exotic": safe_transform(encoders["Likes_Exotic"], likes_exotic),
                 "Favorite_Snack": safe_transform(encoders["Favorite_Snack"], snack)
             }])
-
             prediction = model.predict(new_data)
             st.session_state.modal_result = "🔥 High Spice Tolerance 🌶️" if prediction[0] == 1 else "❄️ Low Spice Tolerance 🌱"
             st.session_state.show_modal = True
-
         except Exception as e:
             st.error(f"Error: {str(e)}")
 
-    # Modal
+    # Modal overlay
     if st.session_state.show_modal:
-    # Modal HTML inside a form
-    st.markdown(f"""
-        <form action="" method="get">
-        <div style="
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.6); z-index:9998;">
-            <button type="submit" style="
-                width:100%; height:100%; border:none; background:none; cursor:pointer;">
-            </button>
-        </div>
-        <div style="
-            position: fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-            z-index:9999; background:#fff3e6; padding:30px 40px; border-radius:15px;
-            border:3px solid #ff751a; max-width:600px; width:90%; text-align:center;
-            font-size:28px; font-weight:bold; color:#cc3300; box-shadow:0 6px 20px rgba(0,0,0,0.35);">
-            🎯 Predicted Spice Tolerance <br><br> {st.session_state.modal_result} <br><br>
-            <small>Click outside this box to close</small>
-        </div>
-        </form>
-    """, unsafe_allow_html=True)
+        st.markdown(f"""
+            <form action="" method="get">
+                <div style="
+                    position: fixed; top:0; left:0; width:100%; height:100%;
+                    background: rgba(0,0,0,0.6); z-index:9998;">
+                    <button type="submit" style="
+                        width:100%; height:100%; border:none; background:none; cursor:pointer;">
+                    </button>
+                </div>
+                <div style="
+                    position: fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+                    z-index:9999; background:#fff3e6; padding:30px 40px; border-radius:15px;
+                    border:3px solid #ff751a; max-width:600px; width:90%; text-align:center;
+                    font-size:28px; font-weight:bold; color:#cc3300; box-shadow:0 6px 20px rgba(0,0,0,0.35);">
+                    🎯 Predicted Spice Tolerance <br><br> {st.session_state.modal_result} <br><br>
+                    <small>Click outside this box to close</small>
+                </div>
+            </form>
+        """, unsafe_allow_html=True)
 
-    # Detect form submit (click outside) and reset
-    if st.experimental_get_query_params() != {}:  # form submit triggers query change
-        st.session_state.show_modal = False
-        st.session_state.modal_result = ""
-        # reset all inputs
-        st.session_state.age = None
-        st.session_state.spicy_freq = None
-        st.session_state.hot_drink = None
-        st.session_state.pain_threshold = None
-        st.session_state.gender_idx = 0
-        st.session_state.fav_cuisine_idx = 0
-        st.session_state.hometown_idx = 0
-        st.session_state.activity_idx = 0
-        st.session_state.family_idx = 0
-        st.session_state.likes_exotic_idx = 0
-        st.session_state.snack_idx = 0
-        st.session_state.country_idx = 0
-        st.experimental_set_query_params()  # clear query params
+        # If form submitted (clicked outside), reset modal & inputs
+        if st.experimental_get_query_params() != {}:
+            reset_inputs()
+            st.experimental_set_query_params()  # clear query params
 
-
-    # JS listener for modal close
-    components.html("""
-    <script>
-    window.addEventListener('message', event => {
-        if(event.data.close_modal) {
-            const streamlitEvent = new CustomEvent("streamlit:close_modal");
-            window.dispatchEvent(streamlitEvent);
-        }
-    });
-    </script>
-    """, height=0)
-
-    # Detect modal close in Python
-    if st.session_state.show_modal:
-        reset_inputs()  # resets modal and inputs
 
 # ---------------------------
 # Model Info Page
@@ -297,4 +279,5 @@ elif page == "ℹ️ Model Info & Factors":
     👈 Use the sidebar to switch back and try your own predictions!
 
     """)
+
 
